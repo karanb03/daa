@@ -1,0 +1,1011 @@
+﻿Q1
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <ctime>
+#include <chrono>
+
+
+// Function to merge two sorted halves of an array
+template <typename T>
+void merge(std::vector<T>& arr, int low, int mid, int high) {
+int n1 = mid - low + 1;
+int n2 = high - mid;
+
+
+std::vector<T> left(n1);
+std::vector<T> right(n2);
+
+
+for (int i = 0; i < n1; ++i)
+left[i] = arr[low + i];
+for (int j = 0; j < n2; ++j)
+right[j] = arr[mid + 1 + j];
+
+
+int i = 0;
+int j = 0;
+int k = low;
+
+
+while (i < n1 && j < n2) {
+if (left[i] <= right[j]) {
+arr[k] = left[i];
+++i;
+} else {
+arr[k] = right[j];
+++j;
+}
+++k;
+}
+
+
+while (i < n1) {
+arr[k] = left[i];
+++i;
+++k;
+}
+
+
+while (j < n2) {
+arr[k] = right[j];
+++j;
+++k;
+}
+}
+
+
+// Function to perform Mergesort
+template <typename T>
+void mergeSort(std::vector<T>& arr, int low, int high) {
+if (low < high) {
+int mid = low + (high - low) / 2;
+
+
+mergeSort(arr, low, mid);
+mergeSort(arr, mid + 1, high);
+
+
+merge(arr, low, mid, high);
+}
+}
+
+
+// Function to partition the array and return the pivot index
+template <typename T>
+int partition(std::vector<T>& arr, int low, int high) {
+T pivot = arr[high];
+int i = low - 1;
+
+
+for (int j = low; j < high; ++j) {
+if (arr[j] <= pivot) {
+i++;
+std::swap(arr[i], arr[j]);
+}
+}
+
+
+std::swap(arr[i + 1], arr[high]);
+return i + 1;
+}
+
+
+// Function to perform Quicksort
+template <typename T>
+void quickSort(std::vector<T>& arr, int low, int high) {
+if (low < high) {
+int pivotIndex = partition(arr, low, high);
+
+
+quickSort(arr, low, pivotIndex - 1);
+quickSort(arr, pivotIndex + 1, high);
+}
+}
+
+
+// Function to generate an array of random values
+std::vector<int> generateRandomValues(int size) {
+std::vector<int> values(size);
+for (int i = 0; i < size; ++i) {
+values[i] = std::rand() % 1000; // Assuming values between 0 and 999
+}
+return values;
+}
+
+
+int main() {
+// Specify the size of the array
+const int size = 500;
+
+
+// Generate an array of random values
+std::vector<int> valuesQuicksort = generateRandomValues(size);
+std::vector<int> valuesMergesort = valuesQuicksort; // Use the same set of random values
+
+
+// Time measurement for Quicksort
+auto startQuicksort = std::chrono::high_resolution_clock::now();
+quickSort(valuesQuicksort, 0, size - 1);
+auto endQuicksort = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> durationQuicksort = endQuicksort - startQuicksort;
+std::cout << "Time taken for Quicksort: " << durationQuicksort.count() << " seconds" << std::endl;
+
+
+// Time measurement for Mergesort
+auto startMergesort = std::chrono::high_resolution_clock::now();
+mergeSort(valuesMergesort, 0, size - 1);
+auto endMergesort = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> durationMergesort = endMergesort - startMergesort;
+std::cout << "Time taken for Mergesort: " << durationMergesort.count() << " seconds" << std::endl;
+
+
+return 0;
+}
+Q3  A)
+Implement Quick Sort using divide and conquer strategy. Give more than 500 inputs
+for best and for worst case scenario, and compare the time taken
+
+
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <algorithm>
+#include <chrono>
+
+
+// Function to partition the array and return the pivot index
+template <typename T>
+int partition(std::vector<T>& arr, int low, int high) {
+T pivot = arr[high];
+int i = low - 1;
+
+
+for (int j = low; j < high; ++j) {
+if (arr[j] <= pivot) {
+i++;
+std::swap(arr[i], arr[j]);
+}
+}
+
+
+std::swap(arr[i + 1], arr[high]);
+return i + 1;
+}
+
+
+// Function to perform Quick Sort
+template <typename T>
+void quickSort(std::vector<T>& arr, int low, int high) {
+if (low < high) {
+int pivotIndex = partition(arr, low, high);
+
+
+quickSort(arr, low, pivotIndex - 1);
+quickSort(arr, pivotIndex + 1, high);
+}
+}
+
+
+// Function to generate best-case scenario (sorted array)
+template <typename T>
+std::vector<T> generateBestCase(int size) {
+std::vector<T> bestCase(size);
+for (int i = 0; i < size; ++i) {
+bestCase[i] = i;
+}
+return bestCase;
+}
+
+
+// Function to generate worst-case scenario (reverse sorted array)
+template <typename T>
+std::vector<T> generateWorstCase(int size) {
+std::vector<T> worstCase(size);
+for (int i = 0; i < size; ++i) {
+worstCase[i] = size - i - 1;
+}
+return worstCase;
+}
+
+
+int main() {
+// Specify the size of the arrays
+const int size = 1000;
+
+
+// Generate best-case scenario (sorted array)
+std::vector<int> bestCase = generateBestCase<int>(size);
+
+
+// Generate worst-case scenario (reverse sorted array)
+std::vector<int> worstCase = generateWorstCase<int>(size);
+
+
+// Time measurement for best-case scenario
+auto startBest = std::chrono::high_resolution_clock::now();
+quickSort(bestCase, 0, size - 1);
+auto endBest = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> durationBest = endBest - startBest;
+std::cout << "Time taken for best-case scenario: " << durationBest.count() << " seconds" << std::endl;
+
+
+// Time measurement for worst-case scenario
+auto startWorst = std::chrono::high_resolution_clock::now();
+quickSort(worstCase, 0, size - 1);
+auto endWorst = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> durationWorst = endWorst - startWorst;
+std::cout << "Time taken for worst-case scenario: " << durationWorst.count() << " seconds" << std::endl;
+
+
+return 0;
+}
+Q3 B) Write a function to demonstrate Mutation of a chromosome representing solution of Traveling Salesperson Problem (TSP)
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+
+
+// Assume distances is a global variable or part of your program logic
+std::vector<std::vector<int>> distances = {
+{0, 10, 15, 20},
+{10, 0, 35, 25},
+{15, 35, 0, 30},
+{20, 25, 30, 0}
+};
+
+
+// Structure to represent a TSP chromosome
+struct Chromosome {
+std::vector<int> tour;
+int fitness; // Assume the fitness is the total distance in this example
+};
+
+
+// Function to calculate the total distance of a tour
+int calculateTotalDistance(const std::vector<int>& tour, const std::vector<std::vector<int>>& distances) {
+int total_distance = 0;
+for (int i = 0; i < tour.size() - 1; ++i) {
+total_distance += distances[tour[i]][tour[i + 1]];
+}
+total_distance += distances[tour.back()][tour.front()]; // Return to the starting city
+return total_distance;
+}
+
+
+// Function to perform swap mutation on a TSP chromosome
+void mutate(Chromosome& chromosome) {
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<int> distribution(1, chromosome.tour.size() - 2); // Avoid mutating the first and last city
+
+
+int index1 = distribution(gen);
+int index2 = distribution(gen);
+
+
+// Swap the cities at index1 and index2
+std::swap(chromosome.tour[index1], chromosome.tour[index2]);
+
+
+// Recalculate the fitness (total distance) after mutation
+chromosome.fitness = calculateTotalDistance(chromosome.tour, distances);
+}
+
+
+int main() {
+// Create an initial TSP chromosome
+Chromosome initialChromosome = {{0, 1, 2, 3, 0}, 0}; // The tour starts and ends at city 0
+
+
+// Print the initial chromosome
+std::cout << "Initial Chromosome: ";
+for (int city : initialChromosome.tour) {
+std::cout << city << " ";
+}
+std::cout << "| Fitness (Total Distance): " << initialChromosome.fitness << std::endl;
+
+
+// Perform mutation
+mutate(initialChromosome);
+
+
+// Print the mutated chromosome
+std::cout << "Mutated Chromosome: ";
+for (int city : initialChromosome.tour) {
+std::cout << city << " ";
+}
+std::cout << "| Fitness (Total Distance): " << initialChromosome.fitness << std::endl;
+
+
+return 0;
+}
+/*Time and space complexity : O(N)*/
+Q5 Implement solution to 0/1 Knapsack using Dynamic Programming algorithm.
+
+
+#include</usr/local/bin/bits/stdc++.h>
+
+
+#include <iostream>
+#include <vector>
+
+
+// Function to solve 0/1 Knapsack problem
+int knapsack(const std::vector<int>& weights, const std::vector<int>& values, int capacity) {
+int n = weights.size();
+std::vector<std::vector<int>> dp(n + 1, std::vector<int>(capacity + 1, 0));
+
+
+for (int i = 1; i <= n; ++i) {
+for (int w = 0; w <= capacity; ++w) {
+if (weights[i - 1] <= w) {
+dp[i][w] = std::max(dp[i - 1][w], values[i - 1] + dp[i - 1][w - weights[i - 1]]);
+} else {
+dp[i][w] = dp[i - 1][w];
+}
+}
+}
+
+
+// The result is stored in the bottom-right cell of the matrix
+return dp[n][capacity];
+}
+
+
+int main() {
+// Example data
+std::vector<int> weights = {2, 3, 6, 9};
+std::vector<int> values = {10, 10,12,18};
+int capacity = 4;
+
+
+// Solve the 0/1 Knapsack problem
+int max_value = knapsack(weights, values, capacity);
+
+
+// Output the result
+std::cout << "Maximum value in the knapsack: " << max_value << std::endl;
+
+
+return 0;
+}
+/*Time: O(N*W) and same for space
+*/
+
+
+Q6 Implement N queen’s problem using Backtracking. Compare the time required for 4,5,6,7, and 8 Queens.
+
+
+#include <iostream>
+#include <vector>
+#include <chrono>
+
+
+class NQueens {
+public:
+NQueens(int n) : board_size(n) {
+queens.resize(n, -1);
+}
+
+
+void solve() {
+auto start_time = std::chrono::high_resolution_clock::now();
+solveNQueens(0);
+auto end_time = std::chrono::high_resolution_clock::now();
+auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+
+
+std::cout << "Time taken for " << board_size << " Queens: " << duration.count() << " microseconds" << std::endl;
+}
+
+
+private:
+int board_size;
+std::vector<int> queens;
+
+
+bool isSafe(int row, int col) {
+// Check if there is a queen in the same column
+for (int i = 0; i < row; ++i) {
+if (queens[i] == col || queens[i] - i == col - row || queens[i] + i == col + row) {
+return false;
+}
+}
+return true;
+}
+
+
+void solveNQueens(int row) {
+if (row == board_size) {
+// All queens are placed successfully
+// Print the solution or count it, etc.
+// Here, we are just printing the solutions
+printSolution();
+return;
+}
+
+
+for (int col = 0; col < board_size; ++col) {
+if (isSafe(row, col)) {
+queens[row] = col;
+solveNQueens(row + 1);
+queens[row] = -1; // Backtrack
+}
+}
+}
+
+
+void printSolution() {
+// Print the chessboard with queens
+std::cout << "Solution:" << std::endl;
+for (int i = 0; i < board_size; ++i) {
+for (int j = 0; j < board_size; ++j) {
+if (queens[i] == j) {
+std::cout << "Q ";
+} else {
+std::cout << ". ";
+}
+}
+std::cout << std::endl;
+}
+std::cout << std::endl;
+}
+};
+
+
+int main() {
+for (int n = 4; n <= 8; ++n) {
+NQueens nQueensProblem(n);
+nQueensProblem.solve();
+}
+
+
+return 0;
+}
+Q 7 Implement solution to Travelling Salesman problem (TSP) Using branch and bound technique (preferably using LCBB)
+#include <iostream>
+#include <vector>
+#include <limits>
+#include <algorithm>
+
+
+const int INF = std::numeric_limits<int>::max();
+
+
+class TSP {
+public:
+TSP(const std::vector<std::vector<int>>& graph) : graph_(graph), num_cities_(graph.size()) {
+path_.resize(num_cities_);
+visited_.resize(num_cities_, false);
+}
+
+
+int solve() {
+// Start from the first city
+visited_[0] = true;
+path_[0] = 0;
+return solveRecursive(0, 1, 0);
+}
+
+
+private:
+int solveRecursive(int current_city, int depth, int cost) {
+if (depth == num_cities_) {
+// Return to the starting city
+return cost + graph_[current_city][0];
+}
+
+
+int min_cost = INF;
+
+
+for (int next_city = 0; next_city < num_cities_; ++next_city) {
+if (!visited_[next_city]) {
+// Calculate the cost if we go to the next city
+int new_cost = cost + graph_[current_city][next_city];
+
+
+// Calculate the lower bound using LCBB
+int lb = new_cost + calculateLowerBound(next_city, depth);
+
+
+if (lb < min_cost) {
+// Explore the next city
+visited_[next_city] = true;
+path_[depth] = next_city;
+
+
+// Recursively solve for the next level
+int result = solveRecursive(next_city, depth + 1, new_cost);
+
+
+// Update the minimum cost
+min_cost = std::min(min_cost, result);
+
+
+// Backtrack
+visited_[next_city] = false;
+}
+}
+}
+
+
+return min_cost;
+}
+
+
+int calculateLowerBound(int current_city, int depth) {
+// LCBB: Calculate the lower bound by summing the two smallest edge costs for each unvisited city
+int lb = 0;
+
+
+// Sort the remaining cities based on edge costs
+std::vector<int> sorted_costs;
+for (int i = 0; i < num_cities_; ++i) {
+if (!visited_[i] && i != current_city) {
+sorted_costs.push_back(graph_[current_city][i]);
+}
+}
+
+
+std::sort(sorted_costs.begin(), sorted_costs.end());
+
+
+// Add the two smallest edge costs to the lower bound
+for (int i = 0; i < std::min(2, static_cast<int>(sorted_costs.size())); ++i) {
+lb += sorted_costs[i];
+}
+
+
+return lb;
+}
+
+
+const std::vector<std::vector<int>>& graph_;
+const int num_cities_;
+std::vector<bool> visited_;
+std::vector<int> path_;
+};
+
+
+int main() {
+// Example graph representing the distances between cities
+std::vector<std::vector<int>> graph = {
+{0, 10, 15, 20},
+{5, 0, 9, 10},
+{6, 13, 0, 12},
+{8, 8, 9, 0}
+};
+
+
+TSP tsp(graph);
+
+
+int min_cost = tsp.solve();
+
+
+std::cout << "Minimum Cost: " << min_cost << std::endl;
+
+
+return 0;
+}
+Q7 (B) Implement solution to Traveling Salesman problem (TSP) Using a Natural Algorithm (like Genetic Algorithm)
+
+
+#include</usr/local/bin/bits/stdc++.h>
+#include <limits.h>
+using namespace std;
+
+
+// Number of cities in TSP
+#define V 5
+
+
+// Names of the cities
+#define GENES ABCDE
+
+
+// Starting Node Value
+#define START 0
+
+
+// Initial population size for the algorithm
+#define POP_SIZE 10
+
+
+// Structure of a GNOME
+// string defines the path traversed
+// by the salesman while the fitness value
+// of the path is stored in an integer
+
+
+struct individual {
+string gnome;
+int fitness;
+};
+
+
+// Function to return a random number
+// from start and end
+int rand_num(int start, int end)
+{
+int r = end - start;
+int rnum = start + rand() % r;
+return rnum;
+}
+
+
+// Function to check if the character
+// has already occurred in the string
+bool repeat(string s, char ch)
+{
+for (int i = 0; i < s.size(); i++) {
+if (s[i] == ch)
+return true;
+}
+return false;
+}
+
+
+// Function to return a mutated GNOME
+// Mutated GNOME is a string
+// with a random interchange
+// of two genes to create variation in species
+string mutatedGene(string gnome)
+{
+while (true) {
+int r = rand_num(1, V);
+int r1 = rand_num(1, V);
+if (r1 != r) {
+char temp = gnome[r];
+gnome[r] = gnome[r1];
+gnome[r1] = temp;
+break;
+}
+}
+return gnome;
+}
+
+
+// Function to return a valid GNOME string
+// required to create the population
+string create_gnome()
+{
+string gnome = "0";
+while (true) {
+if (gnome.size() == V) {
+gnome += gnome[0];
+break;
+}
+int temp = rand_num(1, V);
+if (!repeat(gnome, (char)(temp + 48)))
+gnome += (char)(temp + 48);
+}
+return gnome;
+}
+
+
+// Function to return the fitness value of a gnome.
+// The fitness value is the path length
+// of the path represented by the GNOME.
+int cal_fitness(string gnome)
+{
+int map[V][V] = { { 0, 2, INT_MAX, 12, 5 },
+{ 2, 0, 4, 8, INT_MAX },
+{ INT_MAX, 4, 0, 3, 3 },
+{ 12, 8, 3, 0, 10 },
+{ 5, INT_MAX, 3, 10, 0 } };
+int f = 0;
+for (int i = 0; i < gnome.size() - 1; i++) {
+if (map[gnome[i] - 48][gnome[i + 1] - 48] == INT_MAX)
+return INT_MAX;
+f += map[gnome[i] - 48][gnome[i + 1] - 48];
+}
+return f;
+}
+
+
+// Function to return the updated value
+// of the cooling element.
+int cooldown(int temp)
+{
+return (90 * temp) / 100;
+}
+
+
+// Comparator for GNOME struct.
+bool lessthan(struct individual t1,
+struct individual t2)
+{
+return t1.fitness < t2.fitness;
+}
+
+
+// Utility function for TSP problem.
+void TSPUtil(int map[V][V])
+{
+// Generation Number
+int gen = 1;
+// Number of Gene Iterations
+int gen_thres = 5;
+
+
+vector<struct individual> population;
+struct individual temp;
+
+
+// Populating the GNOME pool.
+for (int i = 0; i < POP_SIZE; i++) {
+temp.gnome = create_gnome();
+temp.fitness = cal_fitness(temp.gnome);
+population.push_back(temp);
+}
+
+
+cout << "\nInitial population: " << endl
+<< "GNOME FITNESS VALUE\n";
+for (int i = 0; i < POP_SIZE; i++)
+cout << population[i].gnome << " "
+<< population[i].fitness << endl;
+cout << "\n";
+
+
+bool found = false;
+int temperature = 10000;
+
+
+// Iteration to perform
+// population crossing and gene mutation.
+while (temperature > 1000 && gen <= gen_thres) {
+sort(population.begin(), population.end(), lessthan);
+cout << "\nCurrent temp: " << temperature << "\n";
+vector<struct individual> new_population;
+
+
+for (int i = 0; i < POP_SIZE; i++) {
+struct individual p1 = population[i];
+
+
+while (true) {
+string new_g = mutatedGene(p1.gnome);
+struct individual new_gnome;
+new_gnome.gnome = new_g;
+new_gnome.fitness = cal_fitness(new_gnome.gnome);
+
+
+if (new_gnome.fitness <= population[i].fitness) {
+new_population.push_back(new_gnome);
+break;
+}
+else {
+
+
+// Accepting the rejected children at
+// a possible probability above threshold.
+float prob = pow(2.7,
+-1 * ((float)(new_gnome.fitness
+- population[i].fitness)
+/ temperature));
+if (prob > 0.5) {
+new_population.push_back(new_gnome);
+break;
+}
+}
+}
+}
+
+
+temperature = cooldown(temperature);
+population = new_population;
+cout << "Generation " << gen << " \n";
+cout << "GNOME FITNESS VALUE\n";
+
+
+for (int i = 0; i < POP_SIZE; i++)
+cout << population[i].gnome << " "
+<< population[i].fitness << endl;
+gen++;
+}
+}
+
+
+int main()
+{
+
+
+int map[V][V] = {
+{0, 10, 15, 20},
+{5, 0, 9, 10},
+{6, 13, 0, 12},
+{8, 8, 9, 0}
+};
+TSPUtil(map);
+}
+
+
+/*
+Time complexity: O(n^2) as it uses nested loops to calculate the fitness value of each gnome in the population.
+Auxiliary Space: O(n)
+*/
+Q11 Implement solution to the concurrent Dining Philosopher Problem. Discuss your solution with respect to fairness, starvation, deadlock and scalability.
+#include <iostream>
+#include <mutex>
+#include <thread>
+
+
+using namespace std;
+
+
+int main()
+{
+const int no_of_philosophers = 20;
+struct Chopstics
+{
+public:
+Chopstics(){;}
+std::mutex mu;
+};
+auto eat = [](Chopstics &left_chopstics, Chopstics& right_chopstics, int philosopher_number) {
+std::unique_lock<std::mutex> llock(left_chopstics.mu);
+std::unique_lock<std::mutex> rlock(right_chopstics.mu);
+cout << "Philosopher " << philosopher_number << " is eating" << endl;
+std::chrono::milliseconds timeout(1500);
+std::this_thread::sleep_for(timeout);
+cout << "Philosopher " << philosopher_number << " has finished eating" << endl;
+};
+//create chopstics
+Chopstics chp[no_of_philosophers];
+//create philosophers
+std::thread philosopher[no_of_philosophers];
+//Philosophers Start reading
+cout << "Philosopher " << (0+1) << " is reading.." << endl;
+philosopher[0] = std::thread(eat, std::ref(chp[0]), std::ref(chp[no_of_philosophers-1]), (0+1));
+for(int i = 1; i < no_of_philosophers; ++i) {
+cout << "Philosopher " << (i+1) << " is reading.." << endl;
+philosopher[i] = std::thread(eat, std::ref(chp[i]), std::ref(chp[i-1]), (i+1));
+}
+for(auto &ph: philosopher) {
+ph.join();
+}
+return 0;
+}
+/*
+Deadlock avoidance:
+To avoid deadlock, philosophers always pick up the fork with the lower index first.
+This ensures that there is no circular waiting scenario where each philosopher is holding a fork and waiting for another.
+Fairness:
+The use of mutexes ensures exclusive access to the forks, preventing multiple philosophers
+from trying to pick up the same fork simultaneously.
+Starvation:
+While this solution does not explicitly address starvation, the use of mutexes helps
+to prevent situations where a philosopher is indefinitely prevented from picking up both forks.
+Scalability:
+This solution can be extended to a larger number of philosophers, making it scalable.
+However, as the number of philosophers increases, the likelihood of contention for forks also increases,
+potentially affecting performance.
+
+
+Time Complexity: O(no_of_philosophers)
+Space Complexity: O(no_of_philosophers)
+
+
+*/
+Q12 Implement multithreaded matrix multiplication. And compare the time taken with sequential matrix multiplication.
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <chrono>
+
+
+// Function to perform sequential matrix multiplication
+std::vector<std::vector<int>> multiplySequential(const std::vector<std::vector<int>>& A,const std::vector<std::vector<int>>& B) {
+int rows_A = A.size();
+int cols_A = A[0].size();
+int cols_B = B[0].size();
+
+
+std::vector<std::vector<int>> result(rows_A, std::vector<int>(cols_B, 0));
+
+
+for (int i = 0; i < rows_A; ++i) {
+for (int j = 0; j < cols_B; ++j) {
+for (int k = 0; k < cols_A; ++k) {
+result[i][j] += A[i][k] * B[k][j];
+}
+}
+}
+
+
+return result;
+}
+
+
+// Function to perform multithreaded matrix multiplication
+std::vector<std::vector<int>> multiplyMultithreaded(const std::vector<std::vector<int>>& A,const std::vector<std::vector<int>>& B,int num_threads) {
+int rows_A = A.size();
+int cols_A = A[0].size();
+int cols_B = B[0].size();
+
+
+std::vector<std::vector<int>> result(rows_A, std::vector<int>(cols_B, 0));
+
+
+std::vector<std::thread> threads;
+threads.reserve(num_threads);
+
+
+auto multiplyBlock = [&](int start, int end) {
+for (int i = start; i < end; ++i) {
+for (int j = 0; j < cols_B; ++j) {
+for (int k = 0; k < cols_A; ++k) {
+result[i][j] += A[i][k] * B[k][j];
+}
+}
+}
+};
+
+
+int block_size = rows_A / num_threads;
+
+
+for (int i = 0; i < num_threads - 1; ++i) {
+threads.emplace_back(multiplyBlock, i * block_size, (i + 1) * block_size);
+}
+
+
+// The last thread handles the remaining rows
+threads.emplace_back(multiplyBlock, (num_threads - 1) * block_size, rows_A);
+
+
+// Wait for all threads to finish
+for (auto& thread : threads) {
+thread.join();
+}
+
+
+return result;
+}
+
+
+int main() {
+const int matrix_size = 1000;
+const int num_threads = 4;
+
+
+// Initialize matrices with random values
+std::vector<std::vector<int>> matrix_A(matrix_size, std::vector<int>(matrix_size, 2));
+std::vector<std::vector<int>> matrix_B(matrix_size, std::vector<int>(matrix_size, 3));
+
+
+// Measure time for sequential multiplication
+auto start_sequential = std::chrono::high_resolution_clock::now();
+auto result_sequential = multiplySequential(matrix_A, matrix_B);
+auto end_sequential = std::chrono::high_resolution_clock::now();
+auto duration_sequential = std::chrono::duration_cast<std::chrono::milliseconds>(end_sequential - start_sequential);
+
+
+std::cout << "Sequential multiplication took " << duration_sequential.count() << " milliseconds." << std::endl;
+
+
+// Measure time for multithreaded multiplication
+auto start_multithreaded = std::chrono::high_resolution_clock::now();
+auto result_multithreaded = multiplyMultithreaded(matrix_A, matrix_B, num_threads);
+auto end_multithreaded = std::chrono::high_resolution_clock::now();
+auto duration_multithreaded = std::chrono::duration_cast<std::chrono::milliseconds>(end_multithreaded - start_multithreaded);
+
+
+std::cout << "Multithreaded multiplication took " << duration_multithreaded.count() << " milliseconds." << std::endl;
+
+
+// Ensure the results match (for correctness)
+if (result_sequential == result_multithreaded) {
+std::cout << "Results match for sequential and multithreaded multiplication." << std::endl;
+} else {
+std::cout << "Results do not match!" << std::endl;
+}
+
+
+return 0;
+}
